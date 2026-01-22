@@ -1,9 +1,9 @@
 import requests
 import json
 
-# Fetch population data from the API and save it to a JSON file
+# The function fetches raw data from the external service, aggregates it by state and stores the result locally as a JSON file
 def fetch_data():
-    # Define the API endpoint and parameters
+    
     url = "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Census_Counties/FeatureServer/0/query"
 
     params = {
@@ -13,15 +13,15 @@ def fetch_data():
         "f": "json"
     }
 
-    # Make the API request
+    # Request data from the ArcGIS REST service
     response = requests.get(url, params=params)
     data = response.json()
 
 
-    # Make a dictionary to hold state population data
+    
     state_population = {}
 
-    # for loop through each feature in the response data
+    # Aggregate county population values on state level
     for feature in data['features']:
         state = feature['attributes']['STATE_NAME']
         population = feature['attributes']['POPULATION']
@@ -34,12 +34,12 @@ def fetch_data():
 
         state_population[state] += population
 
-    # for loop to print each state and its population
+    
     for state, population in state_population.items():
         print(f"STATE: {state} | POPULATION: {population}\n")
 
 
-    # Save the state population data to a JSON file
+    # Save results to a local JSON file
     with open('state_population.json', 'w') as f:
         json.dump(state_population, f)
 

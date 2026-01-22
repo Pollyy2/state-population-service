@@ -3,21 +3,21 @@ import json
 
 app = FastAPI()
 
-# Endpoint to get population data for all states
+# Returns population data for all states
 @app.get("/states")
 def get_states():
     try:
-        # Load the state population data from the JSON file
+        # Data is read from a pre-generated JSON file
         with open('state_population.json', 'r') as f:
             state_population = json.load(f)  
 
-        # return the data as a dictionary
+        
         return state_population
-    # if the file does not exist, raise a 404 error
+    # File is missing if background processing hasn't been run yet
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Data file not found.")
     
-# Endpoint to get population data for a specific state
+# Returns population data for a single state based on its name
 @app.get("/states/{state_name}")
 def get_state_population(state_name: str):
     try:
@@ -25,7 +25,7 @@ def get_state_population(state_name: str):
             state_population = json.load(f)
 
         population = state_population.get(state_name)
-        # if the state is not found, raise a 404 error
+        
         if population is None:
             raise HTTPException(status_code=404, detail="State not found")
 
